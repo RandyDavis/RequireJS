@@ -31,6 +31,7 @@ define(["jquery", "tasks"], function ($, tasks) {
         init: function () {
             _registerEventHandlers();
             tasks.render();
+            oops();
         }
     }
 });
