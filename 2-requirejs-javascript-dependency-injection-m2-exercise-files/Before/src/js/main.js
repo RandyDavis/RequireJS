@@ -117,7 +117,10 @@ define("tasks", ["jquery", "taskData", "taskRenderer"], function($, taskData, ta
     };
 });
 
-define("app", ["jquery", "tasks"], function($, tasks) {
+define("app", function(require, exports, module) {
+    var $ = require("jquery");
+    var tasks = require("tasks");
+
     /* register event handlers */
     function _addTask() {
         tasks.add();
@@ -149,13 +152,13 @@ define("app", ["jquery", "tasks"], function($, tasks) {
         $("#task-list").on("click", ".delete-button", _deleteTask);
     }
 
-    return {
-        init: function() {
-            _registerEventHandlers();
-            tasks.render();
 
-        }
-    };
+    exports.init =  function() {
+        _registerEventHandlers();
+        tasks.render();
+
+    }
+
 });
 
 require(["app"], function(app){
