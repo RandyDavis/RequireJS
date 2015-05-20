@@ -34,7 +34,8 @@ define("taskData", [], function() {
     };
 });
 
-require(["jquery", "taskData"], function($, taskData){
+define("taskRenderer", ["jquery"], function($) {
+    "use strict";
 
     /* create DOM task elements */
 
@@ -62,12 +63,17 @@ require(["jquery", "taskData"], function($, taskData){
         return $task;
     }
 
+    return {
+        renderTasks: renderTasks,
+        renderNew: renderNew
+    };
+});
 
-
+define("tasks", ["jquery", "taskData", "taskRenderer"], function($, taskData, taskRenderer) {
     /* task management */
 
     function add() {
-        renderNew();
+        taskRenderer.renderNew();
     }
 
     function remove(clickEvent) {
@@ -98,23 +104,60 @@ require(["jquery", "taskData"], function($, taskData){
     }
 
     function render() {
-        renderTasks(taskData.load());
+        taskRenderer.renderTasks(taskData.load());
     }
 
+    return {
+        add: add,
+        remove: remove,
+        clear: clear,
+        save: save,
+        cancel: cancel,
+        render: render
+    };
+});
+
+define("app", ["jquery", "tasks"], function($, tasks) {
     /* register event handlers */
-
-    function registerEventHandlers() {
-        $("#new-task-button").on("click", add);
-        $("#delete-all-button").on("click", clear);
-        $("#save-button").on("click", save);
-        $("#cancel-button").on("click", cancel);
-        $("#task-list").on("click", ".delete-button", remove);
+    function _addTask() {
+        tasks.add();
     }
 
-    /* initialize application */
+    function _deleteAllTasks() {
+        tasks.clear();
+    }
 
-    $(function () {
-        registerEventHandlers();
-        render();
-    });
+    function _saveChanges() {
+        tasks.save();
+    }
+
+    function _cancelChanges() {
+        tasks.cancel();
+    }
+
+    function _deleteTask(clickEvent) {
+        tasks.remove(clickEvent);
+    }
+
+
+
+    function _registerEventHandlers() {
+        $("#new-task-button").on("click", _addTask);
+        $("#delete-all-button").on("click", _deleteAllTasks);
+        $("#save-button").on("click", _saveChanges);
+        $("#cancel-button").on("click", _cancelChanges);
+        $("#task-list").on("click", ".delete-button", _deleteTask);
+    }
+
+    return {
+        init: function() {
+            _registerEventHandlers();
+            tasks.render();
+
+        }
+    };
+});
+
+require(["app"], function(app){
+    app.init();
 });
