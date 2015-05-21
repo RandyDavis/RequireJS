@@ -1,6 +1,4 @@
-define(["jquery", ], function ($) {
-
-    var taskTemplate = '<li class="task"><input class="complete" type="checkbox" /> <input class="description" type="text" placeholder="Enter task description..." /> <button class="delete-button">Delete</button></li>';
+define(["jquery", "text!templates/taskTemplate.html"], function ($, taskTemplate) {
 
     function renderTasks(tasks) {
         var elementArray = $.map(tasks, _renderTask);
@@ -29,3 +27,4 @@ define(["jquery", ], function ($) {
         renderNew: renderNew
     };
 });
+
